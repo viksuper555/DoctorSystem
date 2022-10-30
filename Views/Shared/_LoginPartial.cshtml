@@ -1,8 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using DoctorSystem.Data
 
-@inject SignInManager<AppUser> SignInManager
-@inject UserManager<AppUser> UserManager
+@inject SignInManager<DefaultUser> SignInManager
+@inject UserManager<DefaultUser> UserManager
 
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
