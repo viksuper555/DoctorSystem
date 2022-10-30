@@ -4,6 +4,7 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using DoctorSystem.Models;
@@ -56,13 +57,27 @@ namespace DoctorSystem.Areas.Identity.Pages.Account.Manage
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
+            /// 
+            //добавен nullable иначе грешка "Nullable object must have a value"
             [Display(Name = "First Name")]
             [MaxLength(30)]
-            public string FirstName { get; set; }
+            public string? FirstName { get; set; }
+
+            [Display(Name = "Last Name")]
+            [MaxLength(30)]
+            public string? LastName { get; set; }
+            
+            [Display(Name = "Gender")]
+            public string? Gender { get; set; }
 
             [Phone]
             [Display(Name = "Phone number")]
-            public string PhoneNumber { get; set; }
+            public string? PhoneNumber { get; set; }
+
+            
+            [Display(Name = "Birth Date")]
+            [DataType(DataType.Date)]
+            public DateTime? DateOfBirth { get; set; }
         }
 
         private async Task LoadAsync(DefaultUser user)
@@ -76,7 +91,11 @@ namespace DoctorSystem.Areas.Identity.Pages.Account.Manage
             Input = new InputModel
             {
                 PhoneNumber = phoneNumber,
-                FirstName = user.FirstName
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Gender = user.Gender,
+                DateOfBirth= user.DateOfBirth,
+                
             };
         }
 
@@ -122,7 +141,21 @@ namespace DoctorSystem.Areas.Identity.Pages.Account.Manage
                 user.FirstName = Input.FirstName;
                 await _userManager.UpdateAsync(user);
             }
-
+            if (user.LastName != Input.LastName)
+            {
+                user.LastName = Input.LastName;
+                await _userManager.UpdateAsync(user);
+            }
+            if (user.Gender != Input.Gender)
+            {
+                user.Gender = Input.Gender;
+                await _userManager.UpdateAsync(user);
+            }
+            if (user.DateOfBirth != Input.DateOfBirth)
+            {
+                user.DateOfBirth = Input.DateOfBirth;
+                await _userManager.UpdateAsync(user);
+            }
 
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
