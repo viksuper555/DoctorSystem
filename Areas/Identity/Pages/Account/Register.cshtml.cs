@@ -85,7 +85,7 @@ namespace DoctorSystem.Areas.Identity.Pages.Account
         {
             [Display(Name = "Doctor UID")]
             public string DoctorUID { get; set; }
-
+            
             [Display(Name = "Birth Date")]
             [DataType(DataType.Date)]
             public DateTime DateOfBirth { get; set; }
