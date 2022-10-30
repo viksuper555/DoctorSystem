@@ -77,8 +77,13 @@ namespace DoctorSystem.Areas.Identity.Pages.Account
             public DateTime DateOfBirth { get; set; }
 
             [Display(Name = "First Name")]
-            public string DateOfBirth { get; set; }
+            public string FirstName { get; set; }
 
+            [Display(Name = "Last Name")]
+            public string LastName { get; set; }
+
+            [Display(Name = "Gender")]
+            public string Gender { get; set; }
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
@@ -123,10 +128,9 @@ namespace DoctorSystem.Areas.Identity.Pages.Account
             {
                 var user = CreateUser();
                 user.DateOfBirth = Input.DateOfBirth;
-
-                user.FirstName = "Jim";
-                user.LastName = "Jim";
-                user.Gender = "M";
+                user.FirstName = Input.FirstName;
+                user.LastName = Input.LastName;
+                user.Gender = Input.Gender;
 
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
