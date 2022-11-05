@@ -1,0 +1,23 @@
+﻿@model Posts
+
+@{
+    ViewData["Title"] = "Posting Page";
+}
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<h2>@ViewData["Title"]</h2>
+<h2>Create</h2>
+<form method="post">
+    <p>
+        <label asp-for="Title">Title:</label>
+        <input asp-for="Title" />
+    </p>
+    <p>
+        <label asp-for="Description">Describe your problem:</label>
+        <input asp-for="Description" />
+    </p>
+    <p><button type="submit">Submit</button></p>
+</form>
