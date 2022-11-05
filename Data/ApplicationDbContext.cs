@@ -11,6 +11,12 @@ namespace DoctorSystem.Data
         {
         }
 
+        public DbSet<Post> Post { get; set; }
+        public DbSet<Comment> Comment { get; set; }
+
+
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
@@ -31,6 +37,11 @@ namespace DoctorSystem.Data
             modelBuilder.Entity<DefaultUser>()
                 .Property(e => e.DateOfBirth);
 
+            modelBuilder.Entity<Post>()
+                .HasMany(p => p.Comments)
+                .WithOne(p => p.Post)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -58,23 +58,23 @@ namespace DoctorSystem.Areas.Identity.Pages.Account.Manage
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             /// 
-            //добавен nullable иначе грешка "Nullable object must have a value"
+            
             [Display(Name = "First Name")]
             [MaxLength(30)]
-            public string? FirstName { get; set; }
+            public string FirstName { get; set; }
 
             [Display(Name = "Last Name")]
             [MaxLength(30)]
-            public string? LastName { get; set; }
+            public string LastName { get; set; }
             
             [Display(Name = "Gender")]
-            public string? Gender { get; set; }
+            public string Gender { get; set; }
 
             [Phone]
             [Display(Name = "Phone number")]
-            public string? PhoneNumber { get; set; }
+            public string PhoneNumber { get; set; }
 
-            
+            //добавен nullable иначе грешка "Nullable object must have a value"
             [Display(Name = "Birth Date")]
             [DataType(DataType.Date)]
             public DateTime? DateOfBirth { get; set; }
