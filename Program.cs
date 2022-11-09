@@ -2,6 +2,7 @@ using DoctorSystem.Data;
 using DoctorSystem.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,8 +14,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<DefaultUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
-//.AddRoles<IdentityRole>()
+    
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
