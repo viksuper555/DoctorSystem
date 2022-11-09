@@ -1,6 +1,7 @@
 ﻿using Humanizer;
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.InteropServices;
 
 namespace DoctorSystem.Models
 {
@@ -14,5 +15,7 @@ namespace DoctorSystem.Models
 
         [DataType(DataType.Date)]
         public DateTime? DateOfBirth { get; set; }
+
+        public string? DoctorUID { get; set; }
     }
 }

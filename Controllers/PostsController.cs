@@ -12,7 +12,8 @@ using Microsoft.AspNetCore.Identity;
 
 namespace DoctorSystem.Controllers
 {
-    [Authorize]
+    
+    //[Authorize(Roles = "Admin")]
     public class PostsController : Controller
     {
         
@@ -47,7 +48,7 @@ namespace DoctorSystem.Controllers
             {
                 return NotFound();
             }
-
+            var comment = await _context.Comment.ToListAsync();
             return View(post);
         }
 
@@ -168,5 +169,6 @@ namespace DoctorSystem.Controllers
         {
           return _context.Post.Any(e => e.Id == id);
         }
+
     }
 }
