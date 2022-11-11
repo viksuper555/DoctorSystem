@@ -28,10 +28,11 @@ namespace DoctorSystem.Controllers
             _userManager = userManager;
         }
 
+        //[Authorize(Roles = "Doctor")]
         // GET: Posts
         public async Task<IActionResult> Index()
         {
-              return View(await _context.Post.ToListAsync());
+              return View(await _context.Post.Include(p => p.Comments).ToListAsync());
         }
 
         // GET: Posts/Details/5
