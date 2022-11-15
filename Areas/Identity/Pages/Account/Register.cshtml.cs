@@ -21,6 +21,9 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using DoctorSystem.Data;
+using DoctorSystem.Data.Migrations;
+using Microsoft.Extensions.Hosting;
 
 namespace DoctorSystem.Areas.Identity.Pages.Account
 {
@@ -33,6 +36,8 @@ namespace DoctorSystem.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ApplicationDbContext _context;
+
 
         public RegisterModel(
             UserManager<DefaultUser> userManager,
@@ -40,8 +45,10 @@ namespace DoctorSystem.Areas.Identity.Pages.Account
             SignInManager<DefaultUser> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            ApplicationDbContext context)
         {
+            _context = context;
             _roleManager = roleManager;
             _userManager = userManager;
             _userStore = userStore;
@@ -116,7 +123,8 @@ namespace DoctorSystem.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
-            public string? Role { get; set; }
+
+            public string Role { get; set; }
 
             [ValidateNever]
             public IEnumerable<SelectListItem> RoleList { get; set; }
@@ -127,14 +135,14 @@ namespace DoctorSystem.Areas.Identity.Pages.Account
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            Input = new InputModel()
-            {
-                RoleList = _roleManager.Roles.Select(x => x.Name).Select(i => new SelectListItem
-                {
-                    Text = i,
-                    Value = i
-                })
-            };
+            //Input = new InputModel()
+            //{
+            //    RoleList = _roleManager.Roles.Select(x => x.Name).Select(i => new SelectListItem
+            //    {
+            //        Text = i,
+            //        Value = i
+            //    })
+            //};
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
@@ -148,6 +156,16 @@ namespace DoctorSystem.Areas.Identity.Pages.Account
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
                 user.Gender = Input.Gender;
+                if (Input.Role == "Patient")
+                {
+                    await _userManager.AddToRoleAsync(user, "Patient");
+                }
+                else
+                {
+                    await _userManager.AddToRoleAsync(user, "Guest");
+
+                    
+                }
 
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
@@ -155,6 +173,15 @@ namespace DoctorSystem.Areas.Identity.Pages.Account
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
+                if (Input.Role != "Patient")
+                {
+                    var roleRequest = new RoleRequest();
+                    roleRequest.DateCreated = DateTime.Now;
+                    roleRequest.Requester = user;
+                    roleRequest.IsApproved = false;
+                    _context.Add(roleRequest);
+                    await _context.SaveChangesAsync();
+                }
                 if (result.Succeeded)
                 {
                     if (Input.Role == null)
@@ -163,8 +190,12 @@ namespace DoctorSystem.Areas.Identity.Pages.Account
                     }
                     else
                     {
-                        await _userManager.AddToRoleAsync(user, Input.Role);
+                        if (Input.Role != "Doctor")
+                        {
+                            await _userManager.AddToRoleAsync(user, Input.Role);
 
+                        }
+                        await _userManager.AddToRoleAsync(user, "Guest");
                     }
                     _logger.LogInformation("User created a new account with password.");
 
