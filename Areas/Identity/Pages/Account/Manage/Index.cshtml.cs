@@ -74,7 +74,6 @@ namespace DoctorSystem.Areas.Identity.Pages.Account.Manage
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
 
-            //добавен nullable иначе грешка "Nullable object must have a value"
             [Display(Name = "Birth Date")]
             [DataType(DataType.Date)]
             public DateTime? DateOfBirth { get; set; }
