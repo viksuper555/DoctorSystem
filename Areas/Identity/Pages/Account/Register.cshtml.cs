@@ -83,7 +83,9 @@ namespace DoctorSystem.Areas.Identity.Pages.Account
         /// </summary>
         public class InputModel
         {
-            
+            [Display(Name = "Doctor UID")]
+            public string DoctorUID { get; set; }
+
             [Display(Name = "Birth Date")]
             [DataType(DataType.Date)]
             public DateTime DateOfBirth { get; set; }
@@ -135,14 +137,7 @@ namespace DoctorSystem.Areas.Identity.Pages.Account
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            //Input = new InputModel()
-            //{
-            //    RoleList = _roleManager.Roles.Select(x => x.Name).Select(i => new SelectListItem
-            //    {
-            //        Text = i,
-            //        Value = i
-            //    })
-            //};
+        
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
@@ -163,8 +158,7 @@ namespace DoctorSystem.Areas.Identity.Pages.Account
                 else
                 {
                     await _userManager.AddToRoleAsync(user, "Guest");
-
-                    
+                    user.DoctorUID = Input.DoctorUID;
                 }
 
 
