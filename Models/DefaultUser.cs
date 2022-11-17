@@ -1,7 +1,6 @@
 ﻿using Humanizer;
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.InteropServices;
 
 namespace DoctorSystem.Models
 {
