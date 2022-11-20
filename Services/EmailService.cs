@@ -2,6 +2,7 @@
 using Azure;
 using Azure.Communication.Email;
 using Azure.Communication.Email.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace DoctorSystem.Services
 {
@@ -11,8 +12,8 @@ namespace DoctorSystem.Services
         private readonly string _sender;
         public EmailService(IConfiguration configuration)
         {
-            _connectionString = configuration["Email:ConnectionString"];
-            _sender = configuration["Email:Sender"];
+            _connectionString = configuration.GetConnectionString("Email");
+            _sender = configuration["EmailAddress"];
         }
         Task IEmailSender.SendEmailAsync(string email, string subject, string htmlMessage)
         {
