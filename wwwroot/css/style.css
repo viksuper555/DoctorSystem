@@ -7,6 +7,46 @@ Note: Licence under Creative Commons Attribution 3.0
 @import url('font-awesome.css');  
 @import url('animate.css');
 
+#logo {
+	width: 150px;
+}
+
+#registerForm {
+	width: 100%;
+	border: 1px solid #f5f5f5;
+	min-height: 40px;
+	padding-left: 20px;
+	font-size: 13px;
+	padding-right: 20px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+.title {
+	width: 100%;
+	border: 1px solid #f5f5f5;
+	min-height: 40px;
+	padding-left: 20px;
+	font-size: 13px;
+	padding-right: 20px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+#account {
+	width: 100%;
+	border: 1px solid #f5f5f5;
+	min-height: 40px;
+	padding-left: 20px;
+	font-size: 13px;
+	padding-right: 20px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+
 body {
 	font-family:'Open Sans', Arial, sans-serif;
 	font-size:14px;
@@ -668,23 +708,6 @@ form#loginform textarea {
 form#loginform .validation {
 	font-size: 11px;
 }
-
-/* --- register form  ---- */
-
-/*
-form#registerform textarea {
-	border: 1px solid #f5f5f5;
-	width: 100%;
-	padding-left: 20px;
-	padding-top: 10px;
-	font-size: 13px;
-	padding-right: 20px;
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
-}
-*/
-
 
 #sendmessage {
 	border:1px solid #e6e6e6;
