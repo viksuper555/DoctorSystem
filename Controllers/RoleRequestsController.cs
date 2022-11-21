@@ -40,8 +40,8 @@ namespace DoctorSystem.Controllers
                 return NotFound();
             }
 
-            var roleRequest = await _context.RoleRequests.FindAsync(id);
-            var requester = await _context.RoleRequests.Include(r => r.Requester).ToListAsync();
+            var roleRequest = await _context.RoleRequests.Include(rr => rr.Requester).FirstOrDefaultAsync(r => r.Id == id);
+            roleRequest.UserId = roleRequest.Requester.Id;
 
             if (roleRequest == null)
             {
@@ -56,7 +56,7 @@ namespace DoctorSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,DateCreated,IsApproved,DoctorUID")] RoleRequest roleRequest, DefaultUser requester)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,DateCreated,IsApproved,DoctorUID,UserId")] RoleRequest roleRequest)
         {
             if (id != roleRequest.Id)
             {
@@ -71,7 +71,8 @@ namespace DoctorSystem.Controllers
                     await _context.SaveChangesAsync();
                     //var user = roleRequest.Requester;
                     //requester.DoctorUID += 1;
-                    await _userManager.AddToRoleAsync(requester, "Doctor");
+                    var user = await _userManager.FindByIdAsync(roleRequest.UserId);
+                    await _userManager.AddToRoleAsync(user, "Doctor");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
