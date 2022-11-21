@@ -19,6 +19,11 @@
                 <input asp-for="DateCreated" class="form-control" />
                 <span asp-validation-for="DateCreated" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label asp-for="Requester.DoctorUID" class="control-label"></label>
+                <input asp-for="Requester.DoctorUID" class="form-control" />
+                <span asp-validation-for="Requester.DoctorUID" class="text-danger"></span>
+            </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="IsApproved" /> @Html.DisplayNameFor(model => model.IsApproved)
