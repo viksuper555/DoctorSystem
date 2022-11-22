@@ -31,7 +31,43 @@ namespace DoctorSystem.Controllers
         {
               return View(await _context.RoleRequests.Include(r => r.Requester).Include(r => r.Role).ToListAsync());
         }
-       
+        //Authorize admins
+        public async Task<IActionResult> Approve(int? id)
+        {
+            if (id == null || _context.RoleRequests == null)
+            {
+                return NotFound();
+            }
+
+            var roleRequest = await _context.RoleRequests.Include(rr => rr.Requester).FirstOrDefaultAsync(r => r.Id == id);
+
+            if (roleRequest == null)
+            {
+                return NotFound();
+            }
+            try
+            {
+                roleRequest.IsApproved = true;
+                _context.Update(roleRequest);
+                await _context.SaveChangesAsync();
+                var user = await _userManager.FindByIdAsync(roleRequest.Requester.Id);
+                await _userManager.AddToRoleAsync(user, "Doctor");
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!RoleRequestExists(roleRequest.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+
+            return RedirectToAction("Index");
+        }
         // GET: RoleRequests/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -48,7 +84,7 @@ namespace DoctorSystem.Controllers
                 return NotFound();
             }
             return View(roleRequest);
-            //Redirect
+            //return RedirectToAction("Edit");
         }
 
         // POST: RoleRequests/Edit/5
@@ -67,12 +103,12 @@ namespace DoctorSystem.Controllers
             {
                 try
                 {
+                    //roleRequest.IsApproved = true;
                     _context.Update(roleRequest);
                     await _context.SaveChangesAsync();
-                    //var user = roleRequest.Requester;
-                    //requester.DoctorUID += 1;
                     var user = await _userManager.FindByIdAsync(roleRequest.UserId);
                     await _userManager.AddToRoleAsync(user, "Doctor");
+                    
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -85,9 +121,9 @@ namespace DoctorSystem.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
             return View(roleRequest);
+            //return RedirectToAction(nameof(Index));
         }
 
         // GET: RoleRequests/Delete/5
