@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using DoctorSystem.Data;
 using DoctorSystem.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DoctorSystem.Controllers
 {
@@ -31,7 +32,8 @@ namespace DoctorSystem.Controllers
         {
               return View(await _context.RoleRequests.Include(r => r.Requester).Include(r => r.Role).ToListAsync());
         }
-        //Authorize admins
+
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> Approve(int? id)
         {
             if (id == null || _context.RoleRequests == null)
@@ -52,6 +54,8 @@ namespace DoctorSystem.Controllers
                 await _context.SaveChangesAsync();
                 var user = await _userManager.FindByIdAsync(roleRequest.Requester.Id);
                 await _userManager.AddToRoleAsync(user, "Doctor");
+                await _userManager.RemoveFromRoleAsync(user, "Guest");
+
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -64,8 +68,6 @@ namespace DoctorSystem.Controllers
                     throw;
                 }
             }
-
-
             return RedirectToAction("Index");
         }
         // GET: RoleRequests/Edit/5
@@ -84,7 +86,6 @@ namespace DoctorSystem.Controllers
                 return NotFound();
             }
             return View(roleRequest);
-            //return RedirectToAction("Edit");
         }
 
         // POST: RoleRequests/Edit/5
@@ -103,7 +104,6 @@ namespace DoctorSystem.Controllers
             {
                 try
                 {
-                    //roleRequest.IsApproved = true;
                     _context.Update(roleRequest);
                     await _context.SaveChangesAsync();
                     var user = await _userManager.FindByIdAsync(roleRequest.UserId);
@@ -123,7 +123,6 @@ namespace DoctorSystem.Controllers
                 }
             }
             return View(roleRequest);
-            //return RedirectToAction(nameof(Index));
         }
 
         // GET: RoleRequests/Delete/5
