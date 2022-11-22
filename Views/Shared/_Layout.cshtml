@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - DoctorSystem</title>
+    <title>@ViewData["Title"] - Ask A Doc</title>
 @*    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />*@
 @*    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/DoctorSystem.styles.css" asp-append-version="true" />*@
@@ -19,8 +19,8 @@
   <div class="container">
     <div class="row">
       <div class="col-md-12">
-        <p class="pull-left hidden-xs">Medico Healthcare Hospital</p>
-        <p class="pull-right"><i class="fa fa-ambulance"></i>Emergency No. (+001) 123-456-789</p>
+        <p class="pull-left hidden-xs">Ask A Doc</p>
+        <!--<p class="pull-right"><i class="fa fa-ambulance"></i>Emergency No. (+001) 123-456-789</p> -->
       </div>
     </div>
   </div>
@@ -35,24 +35,26 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="index.html"><img src="~/img/logo.png" alt="logo"/></a>
+                    <a class="navbar-brand" href="index.html"><img id="logo" src="~/img/logo.png" alt="logo"/></a>
                 </div>
                 <div class="navbar-collapse collapse ">
                     <ul class="nav navbar-nav">
-                        <li class="active"><a asp-controller="Home" asp-action="Index">Home</a></li> 
+                        <li class="active"><a asp-controller="Home" asp-action="Index"></a>Начална страница</li> 
 						 <li class="dropdown">
-                        <a href="#" data-toggle="dropdown" class="dropdown-toggle">About Us <b class="caret"></b></a>
+                        <a href="#" data-toggle="dropdown" class="dropdown-toggle">За нас <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li><a href="about.html">Our Hospital</a></li>
                             <li><a href="#">Our Team</a></li>
                             <li><a href="#">News</a></li> 
                             <li><a href="#">Investors</a></li>
                         </ul>
-                    </li> 
-						<li><a href="services.html">Services</a></li>
-                        <li><a href="portfolio.html">Portfolio</a></li>
-						<li><a asp-controller="Home" asp-action="Privacy">Contact</a></li>
+						</li>
+						<li><a asp-controller="Home" asp-action="Posting">Досие</a></li>
+						<li><a asp-controller="Home" asp-action="Posting">Случаи</a></li>
+						
+						<li><a asp-controller="Home" asp-action="Privacy">Контакти</a></li>
 						<partial name="_LoginPartial" />
+						
                     </ul>
                 </div>
             </div>
@@ -94,16 +96,17 @@
 					</ul>
 				</div>
 			</div>
-			<div class="col-lg-3">
-				<div class="widget">
-					<h5 class="widgetheading">Latest posts</h5>
-					<ul class="link-list">
-						<li><a href="#">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</a></li>
-						<li><a href="#">Pellentesque et pulvinar enim. Quisque at tempor ligula</a></li>
-						<li><a href="#">Natus error sit voluptatem accusantium doloremque</a></li>
-					</ul>
+				<!-- <div class="col-lg-3">
+					<div class="widget">
+						<h5 class="widgetheading">Latest posts</h5>
+						<ul class="link-list">
+							<li><a href="#">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</a></li>
+							<li><a href="#">Pellentesque et pulvinar enim. Quisque at tempor ligula</a></li>
+							<li><a href="#">Natus error sit voluptatem accusantium doloremque</a></li>
+						</ul>
+					</div>
 				</div>
-			</div>
+			
 			<div class="col-lg-3">
 				<div class="widget">
 					<h5 class="widgetheading">Recent News</h5>
@@ -113,9 +116,9 @@
 						<li><a href="#">Natus error sit voluptatem accusantium doloremque</a></li>
 					</ul>
 				</div>
-			</div>
+			</div>-->
 		</div>
-	</div>
+		</div
 	<div id="sub-footer">
 		<div class="container">
 			<div class="row">
