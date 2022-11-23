@@ -24,6 +24,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using DoctorSystem.Data;
 using DoctorSystem.Data.Migrations;
 using Microsoft.Extensions.Hosting;
+using DoctorSystem.Misc;
 
 namespace DoctorSystem.Areas.Identity.Pages.Account
 {
@@ -151,13 +152,13 @@ namespace DoctorSystem.Areas.Identity.Pages.Account
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
                 user.Gender = Input.Gender;
-                if (Input.Role == "Patient")
+                if (Input.Role == Role.Patient)
                 {
-                    await _userManager.AddToRoleAsync(user, "Patient");
+                    await _userManager.AddToRoleAsync(user, Role.Patient);
                 }
                 else
                 {
-                    await _userManager.AddToRoleAsync(user, "Guest");
+                    await _userManager.AddToRoleAsync(user, Role.Guest);
                     user.DoctorUID = Input.DoctorUID;
                 }
 
@@ -180,16 +181,16 @@ namespace DoctorSystem.Areas.Identity.Pages.Account
                 {
                     if (Input.Role == null)
                     {
-                        await _userManager.AddToRoleAsync(user, "Guest");
+                        await _userManager.AddToRoleAsync(user, Role.Guest);
                     }
                     else
                     {
-                        if (Input.Role != "Doctor")
+                        if (Input.Role != Role.Doctor)
                         {
                             await _userManager.AddToRoleAsync(user, Input.Role);
 
                         }
-                        await _userManager.AddToRoleAsync(user, "Guest");
+                        await _userManager.AddToRoleAsync(user, Role.Guest);
                     }
                     _logger.LogInformation("User created a new account with password.");
 
