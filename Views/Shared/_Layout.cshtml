@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<DefaultUser> SignInManager
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -49,10 +52,11 @@
                             <li><a href="#">Investors</a></li>
                         </ul>
 						</li>
+            <li><a asp-controller="RoleRequests" asp-action="Index">Requests</a></li>
 						<li><a asp-controller="Home" asp-action="Posting">Досие</a></li>
 						<li><a asp-controller="Home" asp-action="Posting">Случаи</a></li>
-						
 						<li><a asp-controller="Home" asp-action="Privacy">Контакти</a></li>
+            
 						<partial name="_LoginPartial" />
 						
                     </ul>

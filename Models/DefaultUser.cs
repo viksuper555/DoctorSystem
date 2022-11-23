@@ -14,5 +14,7 @@ namespace DoctorSystem.Models
 
         [DataType(DataType.Date)]
         public DateTime? DateOfBirth { get; set; }
+
+        public string? DoctorUID { get; set; }
     }
 }

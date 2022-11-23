@@ -19,6 +19,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using DoctorSystem.Data;
+using DoctorSystem.Data.Migrations;
+using Microsoft.Extensions.Hosting;
 
 namespace DoctorSystem.Areas.Identity.Pages.Account
 {
@@ -30,14 +35,21 @@ namespace DoctorSystem.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<DefaultUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ApplicationDbContext _context;
+
 
         public RegisterModel(
             UserManager<DefaultUser> userManager,
             IUserStore<DefaultUser> userStore,
             SignInManager<DefaultUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            RoleManager<IdentityRole> roleManager,
+            ApplicationDbContext context)
         {
+            _context = context;
+            _roleManager = roleManager;
             _userManager = userManager;
             _userStore = userStore;
             _emailStore = GetEmailStore();
@@ -71,6 +83,8 @@ namespace DoctorSystem.Areas.Identity.Pages.Account
         /// </summary>
         public class InputModel
         {
+            [Display(Name = "Doctor UID")]
+            public string DoctorUID { get; set; }
             
             [Display(Name = "Birth Date")]
             [DataType(DataType.Date)]
@@ -111,6 +125,11 @@ namespace DoctorSystem.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            public string Role { get; set; }
+
+            [ValidateNever]
+            public IEnumerable<SelectListItem> RoleList { get; set; }
         }
 
 
@@ -118,6 +137,7 @@ namespace DoctorSystem.Areas.Identity.Pages.Account
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+        
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
@@ -131,14 +151,46 @@ namespace DoctorSystem.Areas.Identity.Pages.Account
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
                 user.Gender = Input.Gender;
+                if (Input.Role == "Patient")
+                {
+                    await _userManager.AddToRoleAsync(user, "Patient");
+                }
+                else
+                {
+                    await _userManager.AddToRoleAsync(user, "Guest");
+                    user.DoctorUID = Input.DoctorUID;
+                }
 
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
+                if (Input.Role != "Patient")
+                {
+                    var roleRequest = new RoleRequest();
+                    roleRequest.DateCreated = DateTime.Now;
+                    roleRequest.Requester = user;
+                    roleRequest.IsApproved = false;
+                    _context.Add(roleRequest);
+                    await _context.SaveChangesAsync();
+                }
                 if (result.Succeeded)
                 {
+                    if (Input.Role == null)
+                    {
+                        await _userManager.AddToRoleAsync(user, "Guest");
+                    }
+                    else
+                    {
+                        if (Input.Role != "Doctor")
+                        {
+                            await _userManager.AddToRoleAsync(user, Input.Role);
+
+                        }
+                        await _userManager.AddToRoleAsync(user, "Guest");
+                    }
                     _logger.LogInformation("User created a new account with password.");
 
                     var userId = await _userManager.GetUserIdAsync(user);
