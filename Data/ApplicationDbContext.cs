@@ -14,7 +14,7 @@ namespace DoctorSystem.Data
         public DbSet<Post> Post { get; set; }
         public DbSet<Comment> Comment { get; set; }
         public DbSet<RoleRequest> RoleRequests { get; set; }
-
+       
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -30,5 +30,64 @@
             @Html.DisplayFor(model => model.DateCreated)
         </dd>
     </dl>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @*@Html.DisplayNameFor(model => model.Comments)*@
+                    Creator
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Comments)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Comments)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Comments)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Creator.Email)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Text)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CreatedAt)
+                    </td>
+                    <td>
+                        <a asp-action="EditComment" asp-route-id="@item.Id">EditComment</a> |
+                        <a asp-action="DeleteComment" asp-route-id="@item.Id">DeleteComment</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <p>
+        <a asp-action="CreateComment" asp-route-id="@Model.Id">Create New Comment</a>
+    </p>
+    @*<div class="row">
+        <div class="col-md-4">
+            <form asp-action="CreateComment">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="PostId" class="control-label"></label>
+                    <select asp-for="PostId" class="form-control" asp-items="ViewBag.PostId"></select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Text" class="control-label"></label>
+                    <input asp-for="Text" class="form-control" />
+                    <span asp-validation-for="Text" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>*@
 </div>
 
