@@ -82,6 +82,13 @@ namespace DoctorSystem.Controllers
         // GET: Posts/Create
         public IActionResult Create()
         {
+            IEnumerable<SelectListItem> CategoryList = _context.Category.Select(
+                u => new SelectListItem
+                {
+                    Text = u.Name,
+                    Value = u.Id.ToString()
+                });
+            ViewBag.CategoryList = CategoryList;
             return View();
         }
 

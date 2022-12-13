@@ -25,6 +25,11 @@ using DoctorSystem.Data;
 using DoctorSystem.Data.Migrations;
 using Microsoft.Extensions.Hosting;
 using DoctorSystem.Misc;
+using Newtonsoft.Json.Linq;
+using System.Net;
+
+//using Microsoft.Extensions.Configuration;
+//using Microsoft.Extensions.Configuration.Json;
 
 namespace DoctorSystem.Areas.Identity.Pages.Account
 {
@@ -39,8 +44,10 @@ namespace DoctorSystem.Areas.Identity.Pages.Account
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ApplicationDbContext _context;
 
+        //private readonly ConfigurationManager _configuration;
 
         public RegisterModel(
+            //ConfigurationManager configuration,
             UserManager<DefaultUser> userManager,
             IUserStore<DefaultUser> userStore,
             SignInManager<DefaultUser> signInManager,
@@ -49,6 +56,7 @@ namespace DoctorSystem.Areas.Identity.Pages.Account
             RoleManager<IdentityRole> roleManager,
             ApplicationDbContext context)
         {
+            //_configuration = configuration;
             _context = context;
             _roleManager = roleManager;
             _userManager = userManager;
@@ -138,15 +146,29 @@ namespace DoctorSystem.Areas.Identity.Pages.Account
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-        
+            //ViewData["ReCaptchaKey"] = _configuration.GetSection("GoogleReCaptcha:key").Value;
+            
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            //ViewData["ReCaptchaKey"] = _configuration.GetSection("GoogleReCaptcha:key").Value;
+            
             if (ModelState.IsValid)
             {
+                if (!ReCaptchaPassed(
+                    Request.Form["g-recaptcha-response"], // that's how you get it from the Request object                      
+                    //_configuration.GetSection("GoogleReCaptcha:secret").Value,
+
+                    _logger
+                ))
+                {
+                    ModelState.AddModelError(string.Empty, "You failed the CAPTCHA, stupid robot. Go play some 1x1 on SFs instead.");
+                    return Page();
+                }
+
                 var user = CreateUser();
                 user.DateOfBirth = Input.DateOfBirth;
                 user.FirstName = Input.FirstName;
@@ -247,6 +269,26 @@ namespace DoctorSystem.Areas.Identity.Pages.Account
                 throw new NotSupportedException("The default UI requires a user store with email support.");
             }
             return (IUserEmailStore<DefaultUser>)_userStore;
+        }
+
+        public static bool ReCaptchaPassed(string gRecaptchaResponse, string secret, ILogger logger)
+        {
+            HttpClient httpClient = new HttpClient();
+            var res = httpClient.GetAsync($"https://www.google.com/recaptcha/api/siteverify?secret={secret}&response={gRecaptchaResponse}").Result;
+            if (res.StatusCode != HttpStatusCode.OK)
+            {
+                logger.LogError("Error while sending request to ReCaptcha");
+                return false;
+            }
+
+            string JSONres = res.Content.ReadAsStringAsync().Result;
+            dynamic JSONdata = JObject.Parse(JSONres);
+            if (JSONdata.success != "true")
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }
