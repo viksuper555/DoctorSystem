@@ -9,6 +9,7 @@ using DoctorSystem.Data;
 using DoctorSystem.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using DoctorSystem.Misc;
 
 namespace DoctorSystem.Controllers
 {
@@ -53,8 +54,8 @@ namespace DoctorSystem.Controllers
                 _context.Update(roleRequest);
                 await _context.SaveChangesAsync();
                 var user = await _userManager.FindByIdAsync(roleRequest.Requester.Id);
-                await _userManager.AddToRoleAsync(user, "Doctor");
-                await _userManager.RemoveFromRoleAsync(user, "Guest");
+                await _userManager.AddToRoleAsync(user, Role.Doctor);
+                await _userManager.RemoveFromRoleAsync(user, Role.Guest);
 
             }
             catch (DbUpdateConcurrencyException)
@@ -107,7 +108,7 @@ namespace DoctorSystem.Controllers
                     _context.Update(roleRequest);
                     await _context.SaveChangesAsync();
                     var user = await _userManager.FindByIdAsync(roleRequest.UserId);
-                    await _userManager.AddToRoleAsync(user, "Doctor");
+                    await _userManager.AddToRoleAsync(user, Role.Doctor);
                     
                 }
                 catch (DbUpdateConcurrencyException)
