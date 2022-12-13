@@ -27,6 +27,8 @@ using Microsoft.Extensions.Hosting;
 using DoctorSystem.Misc;
 using Newtonsoft.Json.Linq;
 using System.Net;
+using DoctorSystem.Singleton;
+using Microsoft.Extensions.Options;
 
 //using Microsoft.Extensions.Configuration;
 //using Microsoft.Extensions.Configuration.Json;
@@ -44,10 +46,10 @@ namespace DoctorSystem.Areas.Identity.Pages.Account
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ApplicationDbContext _context;
 
-        //private readonly ConfigurationManager _configuration;
+        private readonly Config _config;
 
         public RegisterModel(
-            //ConfigurationManager configuration,
+            IOptions<Config> config,
             UserManager<DefaultUser> userManager,
             IUserStore<DefaultUser> userStore,
             SignInManager<DefaultUser> signInManager,
@@ -56,7 +58,7 @@ namespace DoctorSystem.Areas.Identity.Pages.Account
             RoleManager<IdentityRole> roleManager,
             ApplicationDbContext context)
         {
-            //_configuration = configuration;
+            _config = config.Value;
             _context = context;
             _roleManager = roleManager;
             _userManager = userManager;
@@ -146,22 +148,21 @@ namespace DoctorSystem.Areas.Identity.Pages.Account
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            //ViewData["ReCaptchaKey"] = _configuration.GetSection("GoogleReCaptcha:key").Value;
-            
+            ViewData["ReCaptchaKey"] = _config.CaptchaKey;
+
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            //ViewData["ReCaptchaKey"] = _configuration.GetSection("GoogleReCaptcha:key").Value;
-            
+            ViewData["ReCaptchaKey"] = _config.CaptchaKey;
+
             if (ModelState.IsValid)
             {
                 if (!ReCaptchaPassed(
                     Request.Form["g-recaptcha-response"], // that's how you get it from the Request object                      
-                    //_configuration.GetSection("GoogleReCaptcha:secret").Value,
-
+                    _config.CaptchaSecret,
                     _logger
                 ))
                 {
