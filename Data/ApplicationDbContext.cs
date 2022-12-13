@@ -43,6 +43,21 @@ namespace DoctorSystem.Data
                 .WithOne(p => p.Post)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<UserFriendship>(b =>
+            {
+                b.HasKey(x => new { x.UserId, x.UserFriendId });
+
+                b.HasOne(x => x.User)
+                    .WithMany(x => x.Friends)
+                    .HasForeignKey(x => x.UserId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                b.HasOne(x => x.UserFriend)
+                    .WithMany(x => x.FriendsOf)
+                    .HasForeignKey(x => x.UserFriendId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
         }
     }
 }
