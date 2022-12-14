@@ -11,6 +11,10 @@ Note: Licence under Creative Commons Attribution 3.0
 	width: 150px;
 }
 
+#AboutUs {
+	margin-top: -150px;
+}
+
 #registerForm {
 	width: 100%;
 	border: 1px solid #f5f5f5;
