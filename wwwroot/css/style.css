@@ -13,6 +13,13 @@ Note: Licence under Creative Commons Attribution 3.0
 
 #AboutUs {
 	margin-top: -150px;
+	font-size: 20px;
+}
+
+#AboutImg {
+	position: relative;
+	left: 470px;
+	top: -125px;
 }
 
 #registerForm {
