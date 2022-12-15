@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Configuration;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.Extensions.Options;
+using DoctorSystem.Singleton;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +21,8 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<DefaultUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
-    
+
+builder.Services.Configure<Config>(builder.Configuration.GetSection("Config"));
 builder.Services.AddControllersWithViews();
 builder.Services.AddTransient<IEmailSender, EmailService>();
 

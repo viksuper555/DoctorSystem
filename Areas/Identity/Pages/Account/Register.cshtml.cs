@@ -24,6 +24,14 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using DoctorSystem.Data;
 using DoctorSystem.Data.Migrations;
 using Microsoft.Extensions.Hosting;
+using DoctorSystem.Misc;
+using Newtonsoft.Json.Linq;
+using System.Net;
+using DoctorSystem.Singleton;
+using Microsoft.Extensions.Options;
+
+//using Microsoft.Extensions.Configuration;
+//using Microsoft.Extensions.Configuration.Json;
 
 namespace DoctorSystem.Areas.Identity.Pages.Account
 {
@@ -38,8 +46,10 @@ namespace DoctorSystem.Areas.Identity.Pages.Account
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ApplicationDbContext _context;
 
+        private readonly Config _config;
 
         public RegisterModel(
+            IOptions<Config> config,
             UserManager<DefaultUser> userManager,
             IUserStore<DefaultUser> userStore,
             SignInManager<DefaultUser> signInManager,
@@ -48,6 +58,7 @@ namespace DoctorSystem.Areas.Identity.Pages.Account
             RoleManager<IdentityRole> roleManager,
             ApplicationDbContext context)
         {
+            _config = config.Value;
             _context = context;
             _roleManager = roleManager;
             _userManager = userManager;
@@ -83,7 +94,7 @@ namespace DoctorSystem.Areas.Identity.Pages.Account
         /// </summary>
         public class InputModel
         {
-            [Display(Name = "Doctor UID")]
+            [Display(Name = "Doctor UIN")]
             public string DoctorUID { get; set; }
             
             [Display(Name = "Birth Date")]
@@ -98,6 +109,11 @@ namespace DoctorSystem.Areas.Identity.Pages.Account
 
             [Display(Name = "Gender")]
             public string Gender { get; set; }
+
+            [Phone]
+            [Display(Name = "Telephone Number")]
+            public string PhoneNumber { get; set; }
+
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
@@ -137,27 +153,41 @@ namespace DoctorSystem.Areas.Identity.Pages.Account
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-        
+            ViewData["ReCaptchaKey"] = _config.CaptchaKey;
+
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            ViewData["ReCaptchaKey"] = _config.CaptchaKey;
+
             if (ModelState.IsValid)
             {
+                if (!ReCaptchaPassed(
+                    Request.Form["g-recaptcha-response"],                      
+                    _config.CaptchaSecret,
+                    _logger
+                ))
+                {
+                    ModelState.AddModelError(string.Empty, "Go home, Robot, Go home. You failed our Captcha.");
+                    return Page();
+                }
+
                 var user = CreateUser();
                 user.DateOfBirth = Input.DateOfBirth;
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
                 user.Gender = Input.Gender;
-                if (Input.Role == "Patient")
+                user.PhoneNumber = Input.PhoneNumber;
+                if (Input.Role == Role.Patient)
                 {
-                    await _userManager.AddToRoleAsync(user, "Patient");
+                    await _userManager.AddToRoleAsync(user, Role.Patient);
                 }
                 else
                 {
-                    await _userManager.AddToRoleAsync(user, "Guest");
+                    await _userManager.AddToRoleAsync(user, Role.Guest);
                     user.DoctorUID = Input.DoctorUID;
                 }
 
@@ -180,16 +210,16 @@ namespace DoctorSystem.Areas.Identity.Pages.Account
                 {
                     if (Input.Role == null)
                     {
-                        await _userManager.AddToRoleAsync(user, "Guest");
+                        await _userManager.AddToRoleAsync(user, Role.Guest);
                     }
                     else
                     {
-                        if (Input.Role != "Doctor")
+                        if (Input.Role != Role.Doctor)
                         {
                             await _userManager.AddToRoleAsync(user, Input.Role);
 
                         }
-                        await _userManager.AddToRoleAsync(user, "Guest");
+                        await _userManager.AddToRoleAsync(user, Role.Guest);
                     }
                     _logger.LogInformation("User created a new account with password.");
 
@@ -246,6 +276,26 @@ namespace DoctorSystem.Areas.Identity.Pages.Account
                 throw new NotSupportedException("The default UI requires a user store with email support.");
             }
             return (IUserEmailStore<DefaultUser>)_userStore;
+        }
+
+        public static bool ReCaptchaPassed(string gRecaptchaResponse, string secret, ILogger logger)
+        {
+            HttpClient httpClient = new HttpClient();
+            var res = httpClient.GetAsync($"https://www.google.com/recaptcha/api/siteverify?secret={secret}&response={gRecaptchaResponse}").Result;
+            if (res.StatusCode != HttpStatusCode.OK)
+            {
+                logger.LogError("Error while sending request to ReCaptcha");
+                return false;
+            }
+
+            string JSONres = res.Content.ReadAsStringAsync().Result;
+            dynamic JSONdata = JObject.Parse(JSONres);
+            if (JSONdata.success != "true")
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

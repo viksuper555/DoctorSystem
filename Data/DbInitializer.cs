@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using DoctorSystem.Misc;
 
 namespace DoctorSystem.Data;
 public static class DbInitializer
@@ -12,26 +13,26 @@ public static class DbInitializer
         {
             context.Roles.Add(new IdentityRole
             {
-                Name = "Admin",
-                NormalizedName = "ADMIN"
+                Name = Role.Admin,
+                NormalizedName = Role.Admin.ToUpper(),
             });
 
             context.Roles.Add(new IdentityRole
             {
-                Name = "Guest",
-                NormalizedName = "GUEST"
+                Name = Role.Guest,
+                NormalizedName = Role.Guest.ToUpper(),
             });
 
             context.Roles.Add(new IdentityRole
             {
-                Name = "Patient",
-                NormalizedName = "PATIENT"
+                Name = Role.Patient,
+                NormalizedName = Role.Patient.ToUpper(),
             });
 
             context.Roles.Add(new IdentityRole
             {
-                Name = "Doctor",
-                NormalizedName = "DOCTOR"
+                Name = Role.Doctor,
+                NormalizedName = Role.Doctor.ToUpper(),
             });
             context.SaveChanges();
         }
