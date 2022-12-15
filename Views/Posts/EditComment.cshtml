@@ -4,14 +4,15 @@
     ViewData["Title"] = "Edit";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+<div class="title">
 <h1>Edit</h1>
 
 <h4>Comment</h4>
 <hr />
+</div>
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="EditComment">
+        <form id="createPost" asp-action="EditComment">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             @*<input type="hidden" asp-for="PostId">*@
