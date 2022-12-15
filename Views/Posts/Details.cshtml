@@ -11,6 +11,12 @@
     <h4>Post</h4>
     <hr />
     <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Post.Creator)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Post.Creator.FullName)
+        </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Post.Title)
         </dt>
@@ -40,7 +46,7 @@
                     @Html.DisplayNameFor(model => model.Text)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Text)
+                    Date Created
                 </th>
                 <th></th>
             </tr>
@@ -59,8 +65,11 @@
                         @Html.DisplayFor(modelItem => item.CreatedAt)
                     </td>
                     <td>
-                        <a asp-action="EditComment" asp-route-id="@item.Id">EditComment</a> |
-                        <a asp-action="DeleteComment" asp-route-id="@item.Id">DeleteComment</a>
+                        @if (item.Creator.Email == User.Identity.Name)
+                        {
+                           <a asp-action="EditComment" asp-route-id="@item.Id">EditComment</a>
+                           <a asp-action="DeleteComment" asp-route-id="@item.Id">DeleteComment</a>
+                        }
                     </td>
                 </tr>
             }

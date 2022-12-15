@@ -39,7 +39,7 @@
                     </button>
 										
 					
-                    <a class="navbar-brand" asp-controller="RoleRequests" asp-action="Index" ><img id="logo" src="~/img/logo.png" alt="logo"/></a>
+                    <a class="navbar-brand" asp-controller="Home" asp-action="Index" ><img id="logo" src="~/img/logo.png" alt="logo"/></a>
                 </div>
                 <div class="navbar-collapse collapse ">
                     <ul class="nav navbar-nav">
@@ -59,7 +59,7 @@
 						}
 						@if (User.IsInRole("Patient"))
 						{
-							<li><a asp-controller="Posts" asp-action="Index">Досие</a></li>
+							<li><a asp-controller="Posts" asp-action="IndexPatient">Досие</a></li>
 						}
 						@if(User.IsInRole("Doctor")||User.IsInRole("Admin"))
 						{

@@ -42,6 +42,14 @@ namespace DoctorSystem.Controllers
             return View( _context.Post.Include(p => p.Comments).ThenInclude(x => x.Creator).Include(t => t.Creator).Include(v=>v.Category).ToList());
         }
 
+        public ViewResult IndexPatient(string searchString)
+        {
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                return View(_context.Post.Where(s => s.Creator.Email == User.Identity.Name).Where(s => s.Category.Name == searchString).Include(p => p.Comments).ThenInclude(x => x.Creator).Include(t => t.Creator).Include(v => v.Category).ToList());
+            }
+             return View(_context.Post.Where(s => s.Creator.Email == User.Identity.Name).Include(p => p.Comments).ThenInclude(x => x.Creator).Include(t => t.Creator).Include(v => v.Category).ToList());
+        }
         // GET: Posts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
