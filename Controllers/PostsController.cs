@@ -33,73 +33,15 @@ namespace DoctorSystem.Controllers
             _userManager = userManager;
         }
 
-        //[Authorize(Roles = "Doctor")]
-        //// GET: Posts
-        //public async Task<IActionResult> Index()
-        //{
-        //    IEnumerable<SelectListItem> CategoryList = _context.Category.Select(
-        //        u => new SelectListItem
-        //        {
-        //            Text = u.Name,
-        //            Value = u.Id.ToString()
-        //        });
-        //    ViewBag.CategoryList = CategoryList;
-            
-        //    var category = await _context.FindAsync<Category>();
-
-        //    return View(await _context.Post.Include(p => p.Comments).ThenInclude(x=>x.Creator).Include(t=>t.Creator).ToListAsync());
-        //    //.Where(s => s.Category == category)
-        //}
         public ViewResult Index(string searchString)
         {
-            //IEnumerable<SelectListItem> CategoryList = _context.Category.Select(
-            //u => new SelectListItem
-            //{
-            //    Text = u.Name,
-            //    Value = u.Id.ToString()
-            //}).ToList();
-            //ViewBag.CategoryList = new SelectList(_context.Category, _context.Category.FirstOrDefault());
             if (!String.IsNullOrEmpty(searchString))
             {
-                return View(_context.Post.Where(s => s.Category.Name == searchString).Include(p => p.Comments).ThenInclude(x => x.Creator).Include(t => t.Creator).ToList());
+                return View(_context.Post.Where(s => s.Category.Name == searchString).Include(p => p.Comments).ThenInclude(x => x.Creator).Include(t => t.Creator).Include(v=>v.Category).ToList());
             }
-            return View( _context.Post.Include(p => p.Comments).ThenInclude(x => x.Creator).Include(t => t.Creator).ToList());
+            return View( _context.Post.Include(p => p.Comments).ThenInclude(x => x.Creator).Include(t => t.Creator).Include(v=>v.Category).ToList());
         }
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Index([Bind("CategoryId")] int? id)
-        //{
-        //    ViewData["CategoryId"] = new SelectList(_context.Category, "Id", "Name", id);
-        //    var category = await _context.FindAsync<Category>(id);
-        //    return View(await _context.Post.Include(p => p.Comments).Where(s => s.Category == category).ToListAsync());
-        //}
-
-        //public async Task<IActionResult> AddComment(int? id)
-        //{
-        //    if (id == null || _context.Post == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var post = await _context.Post
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (post == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    //var newComment = new Comment()
-        //    //{
-        //    //    CreatedAt = DateTime.Now,
-        //    //    Creator = await _userManager.GetUserAsync(User),
-        //    //    Text = "Dummy text",
-        //    //    Post = post,
-        //    //};
-        //    //_context.Add(newComment);     
-        //    //var comment = await _context.Comment.ToListAsync();
-
-        //    return RedirectToAction("Details");
-        //}
         // GET: Posts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -108,7 +50,7 @@ namespace DoctorSystem.Controllers
                 return NotFound();
             }
 
-            var post = await _context.Post.Include(p=>p.Comments)
+            var post = await _context.Post.Include(p=>p.Comments).ThenInclude(c=>c.Creator)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (post == null)
             {
@@ -259,35 +201,6 @@ namespace DoctorSystem.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        //public async Task<IActionResult> CreateComment(int id)
-        //{
-        //    var post = await _context.Post.FindAsync(id);
-
-        //    ViewData["PostId"] = new SelectList(_context.Post, "Id", "Description");
-        //    if (id == null || _context.Post == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View();
-        //}
-       
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> CreateComment([Bind("Text")] )
-        //{
-        //    comment.Creator = await _userManager.GetUserAsync(User);
-        //    comment.Post = await _context.Post.FindAsync(postident.Id);
-        //    comment.CreatedAt = DateTime.Now;
-            
-        //    _context.Add(comment);
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-
-        //    //ViewData["PostId"] = new SelectList(_context.Post, "Id", "Description", comment.PostId);
-        //    return View(comment);
-        //}
-
         public async Task<IActionResult> EditComment(int? id)
         {
             if (id == null || _context.Comment == null)
@@ -336,9 +249,7 @@ namespace DoctorSystem.Controllers
             }
             ViewData["PostId"] = new SelectList(_context.Post, "Id", "Description", comment.PostId);
             return View(comment);
-        }
-
-        
+        }  
 
         public async Task<IActionResult> DeleteComment(int? id)
         {
@@ -386,57 +297,6 @@ namespace DoctorSystem.Controllers
         {
             return _context.Comment.Any(e => e.Id == id);
         }
-
-
-        //public async Task<IActionResult> Comment(int? id)
-        //{
-        //    if (id == null || _context.Post == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var post = await _context.Post
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (post == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    var comment = await _context.Comment.ToListAsync();
-        //    return View(post);
-        //}
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Comment(int? id)
-        //{
-        //    if (id == null || _context.Post == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var post = await _context.Post
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (post == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    var comment = await _context.Comment.ToListAsync();
-        //    //return View(post);
-
-        //    Comment newComment = null;
-        //    newComment.Creator = await _userManager.GetUserAsync(User);
-        //    newComment.Post = await _context.Post.FindAsync(id);
-        //    newComment.CreatedAt = DateTime.Now;
-
-        //    _context.Add(comment);
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-
-        //    //ViewData["PostId"] = new SelectList(_context.Post, "Id", "Description", comment.PostId);
-        //    return View();
-
-            
-        
     }
 }
 

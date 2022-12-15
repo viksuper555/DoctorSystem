@@ -34,7 +34,7 @@
         <thead>
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.Post.Comments)
+                    @Html.DisplayNameFor(model => model.Post.Creator)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.Text)
@@ -50,7 +50,7 @@
             {
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Creator.Email)
+                        @Html.DisplayFor(modelItem => item.Creator.FullName)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Text)
@@ -69,10 +69,6 @@
     <div>
         <form asp-action="CreateComment">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            @*<div class="form-group">
-            <label asp-for="PostId" class="control-label"></label>
-            <select asp-for="PostId" class ="form-control" asp-items="ViewBag.PostId"></select>
-            </div>*@
             <input type="hidden" asp-for="PostId" />
             <div class="form-group">
                 <label as asp-for="@Model.Text" class="control-label"></label>
@@ -84,24 +80,5 @@
             </div>
         </form>
     </div>
-    @*<div class="row">
-        <div class="col-md-4">
-            <form asp-action="CreateComment">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-group">
-                    <label asp-for="PostId" class="control-label"></label>
-                    <select asp-for="PostId" class="form-control" asp-items="ViewBag.PostId"></select>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Text" class="control-label"></label>
-                    <input asp-for="Text" class="form-control" />
-                    <span asp-validation-for="Text" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Create" class="btn btn-primary" />
-                </div>
-            </form>
-        </div>
-    </div>*@
 </div>
 
