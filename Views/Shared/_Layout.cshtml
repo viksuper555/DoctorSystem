@@ -54,10 +54,10 @@
                             <li><a href="#">Investors</a></li>
                         </ul>
 						</li>
-						@*@if (User.IsInRole("Admin"))
+						@if (User.IsInRole("Admin"))
 						{
 							<li><a asp-controller="RoleRequests" asp-action="Index">Requests</a></li>
-						}*@
+						}
 						@if (User.IsInRole("Patient"))
 						{
 							<li><a asp-controller="Posts" asp-action="Index">Досие</a></li>
@@ -66,7 +66,6 @@
 						{
 							<li><a asp-controller="Posts" asp-action="Index">Случаи</a></li>
 						}
-						<li><a asp-controller="RoleRequests" asp-action="Index">Requests</a></li>
 						<li><a asp-controller="Home" asp-action="Privacy">Контакти</a></li>
             
 						<partial name="_LoginPartial" />
