@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<DoctorSystem.Models.Post>
 
+@*@model IEnumerable<DoctorSystem.Models.Post>*@
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -7,9 +8,40 @@
 
 <h1>Posts</h1>
 
+@*<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Index">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="CategoryId" class="control-label"></label>
+                <select asp-for="CategoryId" asp-items="ViewBag.CategoryList" class="form-select">
+                    <option disabled selected>Select Category</option>
+                </select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>*@
+@*<div class="form-group">
+                <label asp-for="CategoryId" class="control-label"></label>
+                <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId"></select>
+</div>*@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+@*@Html.DropDownList("searchString",(SelectList)ViewBag.CategoryList,"Select Category")
+<a asp-action="Index" asp-route-searchString="@Model.Category">Edit</a>*@
+@using (Html.BeginForm())
+{
+    <p>
+        Find by Category: @Html.TextBox("SearchString")
+        <input type="submit" value="Search" />
+    </p>
+}
 <table class="table">
     <thead>
         <tr>
@@ -18,6 +50,9 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Creator)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.DateCreated)
@@ -35,12 +70,18 @@
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
+                @Html.DisplayFor(model => item.Creator.FullName)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.DateCreated)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    @if(item.Creator == User.Identity) 
+                    {
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                    }
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
             </td>
         </tr>
 }

@@ -18,6 +18,7 @@ namespace DoctorSystem.Models
 
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
+        //!!
         public int CategoryId { get; set; }
         public Category Category { get; set; }
 

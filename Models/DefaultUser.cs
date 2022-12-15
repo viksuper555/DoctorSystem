@@ -12,6 +12,12 @@ namespace DoctorSystem.Models
 
         public string? Gender { get; set; }
 
+        public string FullName
+        {
+            get { return FirstName + " " + LastName; }
+        }
+
+
         [DataType(DataType.Date)]
         public DateTime? DateOfBirth { get; set; }
 

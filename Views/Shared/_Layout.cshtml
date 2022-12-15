@@ -38,6 +38,8 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
+										
+					
                     <a class="navbar-brand" asp-controller="RoleRequests" asp-action="Index" ><img id="logo" src="~/img/logo.png" alt="logo"/></a>
                 </div>
                 <div class="navbar-collapse collapse ">
@@ -52,9 +54,19 @@
                             <li><a href="#">Investors</a></li>
                         </ul>
 						</li>
-                        <li><a asp-controller="RoleRequests" asp-action="Index">Requests</a></li>
-						<li><a asp-controller="Home" asp-action="Posting">Досие</a></li>
-						<li><a asp-controller="Posts" asp-action="Index">Случаи</a></li>
+						@*@if (User.IsInRole("Admin"))
+						{
+							<li><a asp-controller="RoleRequests" asp-action="Index">Requests</a></li>
+						}*@
+						@if (User.IsInRole("Patient"))
+						{
+							<li><a asp-controller="Posts" asp-action="Index">Досие</a></li>
+						}
+						@if(User.IsInRole("Doctor")||User.IsInRole("Admin"))
+						{
+							<li><a asp-controller="Posts" asp-action="Index">Случаи</a></li>
+						}
+						<li><a asp-controller="RoleRequests" asp-action="Index">Requests</a></li>
 						<li><a asp-controller="Home" asp-action="Privacy">Контакти</a></li>
             
 						<partial name="_LoginPartial" />

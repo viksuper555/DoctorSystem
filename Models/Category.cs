@@ -1,4 +1,5 @@
 ﻿using Microsoft.Build.Framework;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DoctorSystem.Models
 {
@@ -7,5 +8,10 @@ namespace DoctorSystem.Models
         public int Id { get; set; }
         [Required]
         public string Name { get; set; }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

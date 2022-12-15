@@ -94,7 +94,7 @@ namespace DoctorSystem.Areas.Identity.Pages.Account
         /// </summary>
         public class InputModel
         {
-            [Display(Name = "Doctor UID")]
+            [Display(Name = "Doctor UIN")]
             public string DoctorUID { get; set; }
             
             [Display(Name = "Birth Date")]
@@ -109,6 +109,11 @@ namespace DoctorSystem.Areas.Identity.Pages.Account
 
             [Display(Name = "Gender")]
             public string Gender { get; set; }
+
+            [Phone]
+            [Display(Name = "Telephone Number")]
+            public string PhoneNumber { get; set; }
+
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
@@ -161,12 +166,12 @@ namespace DoctorSystem.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 if (!ReCaptchaPassed(
-                    Request.Form["g-recaptcha-response"], // that's how you get it from the Request object                      
+                    Request.Form["g-recaptcha-response"],                      
                     _config.CaptchaSecret,
                     _logger
                 ))
                 {
-                    ModelState.AddModelError(string.Empty, "You failed the CAPTCHA, stupid robot. Go play some 1x1 on SFs instead.");
+                    ModelState.AddModelError(string.Empty, "Go home, Robot, Go home. You failed our Captcha.");
                     return Page();
                 }
 
@@ -175,6 +180,7 @@ namespace DoctorSystem.Areas.Identity.Pages.Account
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
                 user.Gender = Input.Gender;
+                user.PhoneNumber = Input.PhoneNumber;
                 if (Input.Role == Role.Patient)
                 {
                     await _userManager.AddToRoleAsync(user, Role.Patient);
