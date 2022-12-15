@@ -67,7 +67,7 @@
                     <td>
                         @if (item.Creator.Email == User.Identity.Name)
                         {
-                           <a asp-action="EditComment" asp-route-id="@item.Id">EditComment</a>
+                           <a asp-action="EditComment" asp-route-id="@item.Id">EditComment|</a>
                            <a asp-action="DeleteComment" asp-route-id="@item.Id">DeleteComment</a>
                         }
                     </td>

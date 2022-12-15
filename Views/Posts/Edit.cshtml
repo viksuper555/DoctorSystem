@@ -32,7 +32,14 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    @if (User.IsInRole("Patient"))
+    {
+        <a asp-action="IndexPatient">Back to List</a>
+    }
+    else
+    {
+        <a asp-action="Index">Back to List</a>
+    }
 </div>
 
 @section Scripts {
