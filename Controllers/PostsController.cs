@@ -137,7 +137,6 @@ namespace DoctorSystem.Controllers
             {
                 return NotFound();
             }
-
             var post = await _context.Post.FindAsync(id);
             if (post == null)
             {
@@ -157,7 +156,6 @@ namespace DoctorSystem.Controllers
             {
                 return NotFound();
             }
-
             if (ModelState.IsValid)
             {
                 try
