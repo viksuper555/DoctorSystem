@@ -30,7 +30,13 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 
 builder.Services.Configure<Config>(builder.Configuration.GetSection("Config"));
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new AntiXssConverter());
+    });
+
+
 builder.Services.AddTransient<IEmailSender, EmailService>();
 
 var configuration = builder.Configuration;
@@ -84,6 +90,7 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseMiddleware<AntiXssMiddleware>();
 
 app.MapControllerRoute(
     name: "default",
