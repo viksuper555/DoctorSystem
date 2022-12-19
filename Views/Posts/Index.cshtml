@@ -4,12 +4,19 @@
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+<div class="title">
 <h1>Posts</h1>
-
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+</div>
+@using (Html.BeginForm())
+{
+    <p>
+        Find by Category: @Html.TextBox("SearchString")
+        <input type="submit" value="Search" />
+    </p>
+}
 <table class="table">
     <thead>
         <tr>
@@ -20,7 +27,13 @@
                 @Html.DisplayNameFor(model => model.Description)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Creator)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.DateCreated)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Category)
             </th>
             <th></th>
         </tr>
@@ -35,12 +48,21 @@
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
+                @Html.DisplayFor(model => item.Creator.FullName)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.DateCreated)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                @Html.DisplayFor(modelItem => item.Category.Name)
+            </td>
+            <td>
+                    @if (item.Creator.Email == User.Identity.Name)
+                    {
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete|</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit|</a>
+                    }
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
             </td>
         </tr>
 }

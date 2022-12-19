@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Configuration;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.Extensions.Options;
+using DoctorSystem.Singleton;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,8 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
 });
 
+
+builder.Services.Configure<Config>(builder.Configuration.GetSection("Config"));
 builder.Services.AddControllersWithViews();
 builder.Services.AddTransient<IEmailSender, EmailService>();
 
