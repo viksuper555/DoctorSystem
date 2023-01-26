@@ -13,8 +13,25 @@ Note: Licence under Creative Commons Attribution 3.0
 
 #AboutUs {
 	margin-top: -150px;
+	font-size: 20px;
 }
 
+#AboutImg {
+	position: relative;
+	left: 470px;
+	top: -125px;
+}
+#createPost {
+	width: 100%;
+	border: 1px solid #f5f5f5;
+	min-height: 40px;
+	padding-left: 20px;
+	font-size: 13px;
+	padding-right: 80px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
 #registerForm {
 	width: 100%;
 	border: 1px solid #f5f5f5;
@@ -31,7 +48,7 @@ Note: Licence under Creative Commons Attribution 3.0
 	width: 100%;
 	border: 1px solid #f5f5f5;
 	min-height: 40px;
-	padding-left: 20px;
+	padding-left: 14px;
 	font-size: 13px;
 	padding-right: 20px;
 	-webkit-box-sizing: border-box;

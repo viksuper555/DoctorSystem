@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Configuration;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.Extensions.Options;
+using DoctorSystem.Singleton;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,8 +21,22 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<DefaultUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
-    
-builder.Services.AddControllersWithViews();
+
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Lockout.MaxFailedAccessAttempts = 10;
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
+});
+
+
+builder.Services.Configure<Config>(builder.Configuration.GetSection("Config"));
+builder.Services.AddControllersWithViews()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new AntiXssConverter());
+    });
+
+
 builder.Services.AddTransient<IEmailSender, EmailService>();
 
 var configuration = builder.Configuration;
@@ -75,6 +90,7 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseMiddleware<AntiXssMiddleware>();
 
 app.MapControllerRoute(
     name: "default",

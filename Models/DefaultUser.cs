@@ -1,4 +1,5 @@
 ﻿using Humanizer;
+using MessagePack;
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
@@ -11,6 +12,14 @@ namespace DoctorSystem.Models
         public string? LastName { get; set; }
 
         public string? Gender { get; set; }
+        
+        public string FullName
+        {
+            get {
+                if (DoctorUID != null) { return "Dr." + FirstName + " " + LastName; }
+                return FirstName + " " + LastName; 
+            }
+        }
 
         [DataType(DataType.Date)]
         public DateTime? DateOfBirth { get; set; }
@@ -18,6 +27,8 @@ namespace DoctorSystem.Models
         public string? DoctorUID { get; set; }
         public ICollection<UserFriendship> FriendsOf { get; set; }
         public ICollection<UserFriendship> Friends { get; set; }
+       
+        
     }
 
     public class UserFriendship
