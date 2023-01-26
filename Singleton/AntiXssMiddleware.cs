@@ -28,7 +28,7 @@ namespace DoctorSystem.Singleton
 
                 if (raw != sanitised)
                 {
-                    throw new Exception("XSS injection detected from middleware.");
+                    Console.WriteLine("XSS injection detected from middleware.");
                 }
             }
 
